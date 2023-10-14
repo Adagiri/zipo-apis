@@ -1,0 +1,76 @@
+extend type Query {
+  getOriginalLink(path: String!): Link
+  "Get links - [for logged-in user]"
+  links: [Link]!
+  "Get a link by id - [for logged-in user]"
+  link_getById(id: ID!): Link!
+  "Check if a link is customizable"
+  link_isCustomizable(path: String!): Boolean!
+  link_click: Click
+}
+
+extend type Mutation {
+  "Shorten a link"
+  link_shorten(alternators: [String!]!, link: String!): LinkResponse!
+  "Shorten a custom link"
+  link_shortenCustom(
+    path: String!
+    alternators: [String!]
+    link: String!
+  ): LinkResponse!
+  "Combine link"
+  link_combineCustom(
+    path: String!
+    combinedLink: CombinedLinkInput!
+  ): LinkResponse!
+  link_shortened_edit(id: ID!, link: String!): LinkResponse!
+  link_combined_edit(id: ID!, combinedLink: CombinedLinkInput!): LinkResponse!
+}
+
+type Click {
+  count: Int!
+  data: [String]!
+}
+
+type Link {
+  _id: ID!
+  path: String!
+  alternators: [String]
+  type: LINK_TYPE!
+  link: String
+  combinedLink: CombinedLink
+  id: String
+}
+
+type CombinedLink {
+  links: [CombinedLinkOne!]
+  description: String
+  title: String
+}
+
+type CombinedLinkOne {
+  title: String!
+  id: String!
+  url: String!
+}
+
+type LinkResponse {
+  code: String!
+  success: Boolean!
+  error: String
+  data: Link!
+}
+
+# Inputs
+
+input CombinedLinkInput {
+  links: [CombinedLinkOneInput!]!
+  description: String!
+  title: String!
+}
+
+input CombinedLinkOneInput {
+  title: String!
+  id: String!
+  url: String!
+}

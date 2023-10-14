@@ -1,0 +1,43 @@
+extend type Query {
+  "Get information about the logged-in user"
+  user: User
+  "Get information about a certain user"
+  user_getById(id: ID!): User!
+}
+
+extend type Mutation {
+  auth_verifyEmail(token: String!): UserResponse!
+  "Login with email and password"
+  auth_login(email: String!, password: String!): UserResponse!
+  "Login with email and password"
+  auth_register(
+    name: String!
+    email: String!
+    password: String!
+    receiveNewsletter: Boolean!
+  ): DefaultResponse!
+  "Authenticate with google"
+  auth_google(
+    name: String!
+    email: String!
+    ssoGoogleId: String!
+    receiveNewsletter: Boolean
+  ): UserResponse!
+}
+
+type UserResponse {
+  code: String!
+  success: Boolean!
+  error: String
+  data: User
+  "User authentication token"
+  token: String
+}
+
+type User {
+  _id: ID!
+  email: String
+  name: String
+  "Google account Id of the user. This field will be null if the user never authenticated with Google"
+  ssoGoogleId: String
+}
